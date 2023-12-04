@@ -33,6 +33,36 @@ android {
     }
 }
 
+publishing {
+    publications {
+        // Publication for the Release variant
+        create<MavenPublication>("azure-artifact-release"){
+            groupId = "com.sevenpeakssoftware.samplelib"
+            artifactId = "samplelib"
+            version = "1.0.0"
+            artifact("${layout.buildDirectory.get().asFile}/outputs/aar/samplelib-release.aar")
+        }
+
+        // Publication for the Debug variant
+        create<MavenPublication>("azure-artifact-debug"){
+            groupId = "com.sevenpeakssoftware.samplelib"
+            artifactId = "samplelib"
+            version = "1.0.0"
+            artifact("${layout.buildDirectory.get().asFile}/outputs/aar/samplelib-debug.aar")
+        }
+    }
+    repositories {
+        maven{
+            name = "android-lib-demo"
+            url = uri("https://pkgs.dev.azure.com/1993khiladi/_packaging/1993khiladi/maven/v1")
+            credentials {
+                username = project.findProperty("PERSONAL_AA_USER") as String? ?: System.getenv("PERSONAL_AA_USER")
+                password = project.findProperty("PERSONAL_AA_API_KEY") as String? ?: System.getenv("PERSONAL_AA_API_KEY")
+            }
+        }
+    }
+}
+
 dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
